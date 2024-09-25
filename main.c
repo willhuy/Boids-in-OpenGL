@@ -1,5 +1,7 @@
 #include <freeglut.h>
 
+#define FLOCK_SIZE 40
+
 void myDisplay()
 {
 	// clear the screen 
