@@ -1,6 +1,6 @@
 #include <freeglut.h>
 
-void myDisplay(void)
+void myDisplay()
 {
 	// clear the screen 
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -26,15 +26,17 @@ void myDisplay(void)
 	glVertex2f(0.5, 0);
 	glEnd();
 
-	// send all output to display 
-	glFlush();
+	// Swap the double buffers
+	glutSwapBuffers();
+}
+
+void myIdle() {
+
 }
 
 void initializeGL() {
 	glClearColor(0, 0, 0, 1);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluOrtho2D(0.0, 1.0, 0.0, 1.0);
+	gluOrtho2D(-1.0, 1.0, -1.0, 1.0);
 }
 
 void main(int argc, char** argv)
@@ -43,15 +45,21 @@ void main(int argc, char** argv)
 	// initialize the toolkit
 	glutInit(&argc, argv);
 
+	// Set inital display properties
+	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
+	glutInitWindowSize(500, 500);
+	glutInitWindowPosition(100, 150);
+
 	// open the screen window
-	glutCreateWindow("simple");
+	glutCreateWindow("Assignment 1");
 
 	// register redraw function
 	glutDisplayFunc(myDisplay);
 
-	initializeGL();
+	// register idle function
+	glutIdleFunc(myIdle);
 
-	// go into a perpetual loop
+	initializeGL();
 	glutMainLoop();
 }
 
