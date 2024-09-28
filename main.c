@@ -1,31 +1,20 @@
 #include <freeglut.h>
 
-#define FLOCK_SIZE 40
+#include "boidManager.h"
 
 void myDisplay()
 {
+	/* Draw the boids */
 	// clear the screen 
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	// draw the top rectangle
-	glBegin(GL_TRIANGLE_STRIP);
-	glColor3f(1.0, 1.0, 0.0);
-	glVertex2f(0.3, 0.7);
+	glBegin(GL_TRIANGLES);
 
-	glColor3f(1.0, 1.0, 0.0);
-	glVertex2f(0, 0.7);
+		for (int boidIndex = 0; boidIndex < FLOCK_SIZE; boidIndex++) {
+			glVertex2f(listOfBoids[boidIndex]->x, listOfBoids[boidIndex]->y);
+		}
 
-	glColor3f(1.0, 0.0, 0.0);
-	glVertex2f(0.3, 0.3);
-
-	glColor3f(1.0, 0.0, 1.0);
-	glVertex2f(0, 0);
-
-	glColor3f(1.0, 0.0, 0.0);
-	glVertex2f(0.5, 0.3);
-
-	glColor3f(1.0, 0.0, 1.0);
-	glVertex2f(0.5, 0);
 	glEnd();
 
 	// Swap the double buffers
@@ -33,16 +22,20 @@ void myDisplay()
 }
 
 void myIdle() {
-
+	glutPostRedisplay();
 }
 
 void initializeGL() {
 	glClearColor(0, 0, 0, 1);
+	glColor3f(0.0, 0.0, 1.0);
 	gluOrtho2D(-1.0, 1.0, -1.0, 1.0);
 }
 
 void main(int argc, char** argv)
 {
+
+	// Create boids with random coordinate
+	createBoids();
 
 	// initialize the toolkit
 	glutInit(&argc, argv);
