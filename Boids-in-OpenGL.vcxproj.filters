@@ -15,18 +15,21 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.c">
+    <ClCompile Include="MainRender.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="boidManager.c">
+    <ClCompile Include="BoidManager.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="boidManager.h">
+    <ClInclude Include="BoidManager.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="boid.h">
+    <ClInclude Include="Boid.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MainRender.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

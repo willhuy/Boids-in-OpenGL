@@ -129,12 +129,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="boidManager.c" />
-    <ClCompile Include="main.c" />
+    <ClCompile Include="BoidManager.c" />
+    <ClCompile Include="MainRender.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="boid.h" />
-    <ClInclude Include="boidManager.h" />
+    <ClInclude Include="Boid.h" />
+    <ClInclude Include="BoidManager.h" />
+    <ClInclude Include="MainRender.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
