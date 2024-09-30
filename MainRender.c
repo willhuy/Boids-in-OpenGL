@@ -9,7 +9,7 @@ void renderBoid(Boid* boid) {
 	float xVertex1 = cos(angle) * BOID_SIZE + boid->xCoordinate;
 	float yVertex1 = sin(angle) * BOID_SIZE + boid->yCoordinate;
 
-	// To make an equilateral triangle, angle has to be 60
+	// I want to make an equilateral triangle, so angle has to be 60
 	float xVertex2 = cos(angle + (2 * PI / 3)) * BOID_SIZE + boid->xCoordinate;
 	float yVertex2 = sin(angle + (2 * PI / 3)) * BOID_SIZE + boid->yCoordinate;
 
@@ -26,11 +26,11 @@ void myDisplay()
 	// clear the screen 
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	// draw the top rectangle
+	// draw the boid as triangles
 	glBegin(GL_TRIANGLES);
 
 	for (int boidIndex = 0; boidIndex < FLOCK_SIZE; boidIndex++) {
-		renderBoid(listOfBoids[boidIndex]);
+		renderBoid(currentFlock[boidIndex]);
 	}
 
 	glEnd();
@@ -50,7 +50,10 @@ void initializeGL() {
 	// Set drawing color to be blue
 	glColor3f(0.0, 0.0, 1.0);
 
+	// Set matrix mode
 	glMatrixMode(GL_PROJECTION);
+
+	// Load the identity matrix
 	glLoadIdentity();
 
 	// Set window mode to 2D orthographic and set the window size 
