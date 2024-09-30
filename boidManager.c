@@ -30,7 +30,12 @@ void createBoids() {
 			boid->xCoordinate = randomFloatGenerator(MAX_RANDOM_RANGE, MIN_RANDOM_RANGE);
 			boid->yCoordinate = randomFloatGenerator(MAX_RANDOM_RANGE, MIN_RANDOM_RANGE);
 
-			printf("X: %f, Y: %f\n", boid->xCoordinate, boid->yCoordinate);
+			// Random the boid direction in range of 0 and 360
+			float angle = randomFloatGenerator(0, 2 * PI);
+			boid->xVelocity = cos(angle) * BOID_BASE_SPEED;
+			boid->yVelocity = sin(angle) * BOID_BASE_SPEED;
+
+			// Add boid to the list
 			listOfBoids[boidIndex] = boid;
 		}
 		else {

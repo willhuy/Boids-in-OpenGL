@@ -4,7 +4,9 @@
 
 #include "BoidManager.h"
 
-void renderBoid();
+#define BOID_SIZE 0.02f
+
+void renderBoid(Boid*);
 
 void myDisplay();
 
