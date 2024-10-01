@@ -105,6 +105,7 @@ void initializeGL() {
 
 void main(int argc, char** argv)
 {
+	// Print out the control instructions
 	printf("\n\n\nScreen Controls:\n");
 	printf("----------------------\n");
 	printf("Page Up : faster\n");
@@ -117,6 +118,7 @@ void main(int argc, char** argv)
 	// Set the seed for rand() function
 	srand(time(NULL));
 
+	// Create the boid manager containing the current, previoud flock and nearest neighbor list
 	initializeBoidManager();
 
 	// Create boids with random coordinate and velocity
@@ -142,6 +144,9 @@ void main(int argc, char** argv)
 	// register keyboard input function
 	glutKeyboardFunc(myKey);
 
+	// Initialize OpenGL settings
 	initializeGL();
+
+	// Enter the program main loop
 	glutMainLoop();
 }

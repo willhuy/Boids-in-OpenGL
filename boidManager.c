@@ -54,7 +54,7 @@ void updateBoids() {
 		find6NearestNeighbors(previousFlock[boidIndex], boidIndex, &nearestNeighbors);
 
 		// Check if the boid is in certain distance with a wall
-		//avoidWalls();
+		avoidWalls(previousFlock[boidIndex]);
 	}
 }
 
@@ -98,29 +98,29 @@ float findEuclideanDistance(float x1, float x2, float y1, float y2) {
 	return sqrt(pow(xDistance, 2) + pow(yDistance, 2));
 }
 
-//void avoidWalls(int boidIndex) {
-//
-//	// Approaching left wall
-//	float distanceToLeftWall = findEuclideanDistance(LEFT_WALL_LIMIT, previousFlock[boidIndex]->xCoordinate, 0, 0);
-//	if (distanceToLeftWall <= EDGE_AVOIDANCE_DISTANCE) {
-//		currentFlock[boidIndex]->xVelocity; // Update xVelocity
-//	}
-//
-//	// Approaching right wall
-//	float distanceToLeftWall = findEuclideanDistance(RIGHT_WALL_LIMIT, previousFlock[boidIndex]->xCoordinate, 0, 0);
-//	if (distanceToLeftWall <= EDGE_AVOIDANCE_DISTANCE) {
-//		currentFlock[boidIndex]->xVelocity; // Update xVelocity
-//	}
-//
-//	// Approaching bottom wall
-//	float distanceToLeftWall = findEuclideanDistance(0, 0, BOTTOM_WALL_LIMIT, );
-//	if (distanceToLeftWall <= EDGE_AVOIDANCE_DISTANCE) {
-//		currentFlock[boidIndex]->yVelocity; // Update yVelocity
-//	}
-//
-//	// Approaching top wall
-//	float distanceToLeftWall = findEuclideanDistance(LEFT_WALL_LIMIT, previousFlock[boidIndex]->xCoordinate, 0, 0);
-//	if (distanceToLeftWall <= EDGE_AVOIDANCE_DISTANCE) {
-//		currentFlock[boidIndex]->yVelocity; // Update yVelocity
-//	}
-//}
+void avoidWalls(int boidIndex) {
+
+	// Approaching left wall
+	float distanceToLeftWall = findEuclideanDistance(LEFT_WALL_LIMIT, previousFlock[boidIndex]->xCoordinate, 0, 0);
+	if (distanceToLeftWall <= EDGE_AVOIDANCE_DISTANCE) {
+		currentFlock[boidIndex]->xVelocity; // Update xVelocity
+	}
+
+	// Approaching right wall
+	float distanceToRightWall = findEuclideanDistance(RIGHT_WALL_LIMIT, previousFlock[boidIndex]->xCoordinate, 0, 0);
+	if (distanceToRightWall <= EDGE_AVOIDANCE_DISTANCE) {
+		currentFlock[boidIndex]->xVelocity; // Update xVelocity
+	}
+
+	// Approaching bottom wall
+	float distanceToBottomWall = findEuclideanDistance(0, 0, BOTTOM_WALL_LIMIT, previousFlock[boidIndex]->yCoordinate);
+	if (distanceToBottomWall <= EDGE_AVOIDANCE_DISTANCE) {
+		currentFlock[boidIndex]->yVelocity; // Update yVelocity
+	}
+
+	// Approaching top wall
+	float distanceToTopWall = findEuclideanDistance(0, 0, TOP_WALL_LIMIT, previousFlock[boidIndex]->yCoordinate);
+	if (distanceToTopWall <= EDGE_AVOIDANCE_DISTANCE) {
+		currentFlock[boidIndex]->yVelocity; // Update yVelocity
+	}
+}
