@@ -6,19 +6,15 @@ float randomFloatGenerator(float max, float min) {
 }
 
 void initializeBoidManager() {
-	// Initialize current and previous flock list containing Boids
-	currentFlock = malloc(sizeof(Boid*) * FLOCK_SIZE);
-	previousFlock = malloc(sizeof(Boid*) * FLOCK_SIZE);
-
-	if (currentFlock == NULL || previousFlock == NULL) {
-		printf("Failed to allocate memory for current flock or previous flock");
-		return -1;
-	}
-
 	// Initialize space for each Boid
 	for (int boidIndex = 0; boidIndex < FLOCK_SIZE; boidIndex++) {
 		currentFlock[boidIndex] = malloc(sizeof(Boid));
 		previousFlock[boidIndex] = malloc(sizeof(Boid));
+	}
+
+	// Initialize the nearest neighbors list
+	for (int neighborIndex = 0; neighborIndex < NUM_OF_NEAREST_NEIGHBORS; neighborIndex++) {
+		nearestNeighbors[neighborIndex] = malloc(sizeof(Boid));
 	}
 }
 
@@ -50,41 +46,81 @@ void createBoids() {
 void updateBoids() {
 	// Copy boids from current to previous flock
 	for (int boidIndex = 0; boidIndex < FLOCK_SIZE; boidIndex++) {
-		memcpy(previousFlock[boidIndex], currentFlock[boidIndex], sizeof(Boid*));
+		previousFlock[boidIndex] = currentFlock[boidIndex];
 	}
 
 	for (int boidIndex = 0; boidIndex < FLOCK_SIZE; boidIndex++) {
 		// Find 6 nearest neighbors
+		find6NearestNeighbors(previousFlock[boidIndex], boidIndex, &nearestNeighbors);
 
+		// Check if the boid is in certain distance with a wall
+		//avoidWalls();
 	}
 }
 
-Boid** find6NearestNeighbors(Boid* currentBoid, int indexOfCurrentBoid, Boid** flock) {
-	Boid** nearestNeighbors = malloc(sizeof(Boid*) * NUM_OF_NEAREST_NEIGHBORS);
-
-	if (nearestNeighbors != NULL) {
-		for (int neighborIndex = 0; neighborIndex < NUM_OF_NEAREST_NEIGHBORS; neighborIndex++) {
-			nearestNeighbors[neighborIndex] = malloc(sizeof(Boid));
-		}
-	}
-	else {
-		printf("Failed to allocate list of nearest neightbors");
-		return -1;
-	}
+void find6NearestNeighbors(Boid* currentBoid, int indexOfCurrentBoid, Boid* givenNearestNeighbors[]) {
 
 	// Iterate through all boids
+	float minDistance = 9999.0f;
 	float distance[FLOCK_SIZE] = {0};
 	for (int boidIndex = 0; boidIndex < FLOCK_SIZE; boidIndex++) {
 		
 		// Skip itself
 		if (boidIndex == indexOfCurrentBoid) {
-			distance[boidIndex] = -1;
+			distance[boidIndex] = -1; // Euclidean distance can't be negative
 			continue;
 		}
 
 		// Find euclidean distance
-		float xDistance = currentBoid->xCoordinate - flock[boidIndex]->xCoordinate;
-		float yDistance = currentBoid->yCoordinate - flock[boidIndex]->yCoordinate;
-		distance[boidIndex] = sqrt(pow(xDistance, 2) + pow(yDistance, 2));
+		distance[boidIndex] = findEuclideanDistance(currentBoid->xCoordinate, previousFlock[boidIndex]->xCoordinate, 
+													currentBoid->yCoordinate, previousFlock[boidIndex]->yCoordinate);
+	}
+
+	for (int nearestNeighborIndex = 0; nearestNeighborIndex < NUM_OF_NEAREST_NEIGHBORS; nearestNeighborIndex++) {
+		int minDistanceIndex = 0;
+		for (int boidIndex = 0; boidIndex < FLOCK_SIZE; boidIndex++) {
+			if (distance[boidIndex] < minDistance && distance[boidIndex] != -1) {
+				minDistance = distance[boidIndex];
+				minDistanceIndex = boidIndex;
+			}
+		}
+
+		// Add the Boid from the flock mith min distance to the list
+		givenNearestNeighbors[nearestNeighborIndex] = previousFlock[minDistanceIndex];
+		distance[minDistanceIndex] = -1; // Flag the value has been recorded
+		minDistance = 9999.0f; // Reset minDistance
 	}
 }
+
+float findEuclideanDistance(float x1, float x2, float y1, float y2) {
+	float xDistance = x1 - x2;
+	float yDistance = y1 - y2;
+	return sqrt(pow(xDistance, 2) + pow(yDistance, 2));
+}
+
+//void avoidWalls(int boidIndex) {
+//
+//	// Approaching left wall
+//	float distanceToLeftWall = findEuclideanDistance(LEFT_WALL_LIMIT, previousFlock[boidIndex]->xCoordinate, 0, 0);
+//	if (distanceToLeftWall <= EDGE_AVOIDANCE_DISTANCE) {
+//		currentFlock[boidIndex]->xVelocity; // Update xVelocity
+//	}
+//
+//	// Approaching right wall
+//	float distanceToLeftWall = findEuclideanDistance(RIGHT_WALL_LIMIT, previousFlock[boidIndex]->xCoordinate, 0, 0);
+//	if (distanceToLeftWall <= EDGE_AVOIDANCE_DISTANCE) {
+//		currentFlock[boidIndex]->xVelocity; // Update xVelocity
+//	}
+//
+//	// Approaching bottom wall
+//	float distanceToLeftWall = findEuclideanDistance(0, 0, BOTTOM_WALL_LIMIT, );
+//	if (distanceToLeftWall <= EDGE_AVOIDANCE_DISTANCE) {
+//		currentFlock[boidIndex]->yVelocity; // Update yVelocity
+//	}
+//
+//	// Approaching top wall
+//	float distanceToLeftWall = findEuclideanDistance(LEFT_WALL_LIMIT, previousFlock[boidIndex]->xCoordinate, 0, 0);
+//	if (distanceToLeftWall <= EDGE_AVOIDANCE_DISTANCE) {
+//		currentFlock[boidIndex]->yVelocity; // Update yVelocity
+//	}
+//}

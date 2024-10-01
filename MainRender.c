@@ -30,6 +30,29 @@ void myDisplay()
 	glBegin(GL_TRIANGLES);
 
 	for (int boidIndex = 0; boidIndex < FLOCK_SIZE; boidIndex++) {
+		if (highlightedBoidIndex != -1) {
+			if (boidIndex == highlightedBoidIndex) {
+				glColor3f(1.0, 0.0, 0.0); // Red for the boid being highlighted
+			}
+			else {
+				find6NearestNeighbors(currentFlock[highlightedBoidIndex], highlightedBoidIndex, &nearestNeighborOfBoid);
+				for (int neighborIndex = 0; neighborIndex < NUM_OF_NEAREST_NEIGHBORS; neighborIndex++) {
+					// If this is the neighbor of the highlighted boid
+					printf("Current boid : %p, the nearest neighbors: %p\n", currentFlock[boidIndex], nearestNeighbors[neighborIndex]);
+					if (currentFlock[boidIndex] == nearestNeighborOfBoid[neighborIndex]) {
+						glColor3f(0.0, 1.0, 0.0); // Green for the highlighted boid's neighbors
+						break;
+					}
+					else {
+						glColor3f(0.0, 0.0, 1.0);
+					}
+				}
+			}
+		}
+		else {
+			glColor3f(0.0, 0.0, 1.0);
+		}
+
 		renderBoid(currentFlock[boidIndex]);
 	}
 
@@ -40,7 +63,27 @@ void myDisplay()
 }
 
 void myIdle() {
+	updateBoids();
 	glutPostRedisplay();
+}
+
+void myKey(unsigned char key, int x, int y) {
+	// User press 'q' to quit
+	if (key == 'q') {
+		printf("User press 'q'!\n");
+		exit(0);
+	}
+
+	// User press number key from 1 to 9 to highlight the Boid
+	if (key >= '1' && key <= '9') {
+		printf("User press %c, the highlight boid index is %d\n", key, key - '1');
+		highlightedBoidIndex = key - '1'; // Convert character to integer and minus 1 to get the index
+	}
+
+	// Un-highlight the boid
+	if (key == '0') {
+		highlightedBoidIndex = -1;
+	}
 }
 
 void initializeGL() {
@@ -57,7 +100,7 @@ void initializeGL() {
 	glLoadIdentity();
 
 	// Set window mode to 2D orthographic and set the window size 
-	gluOrtho2D(-1.0, 1.0, -1.0, 1.0);
+	gluOrtho2D(LEFT_WALL_LIMIT, RIGHT_WALL_LIMIT, BOTTOM_WALL_LIMIT, TOP_WALL_LIMIT);
 }
 
 void main(int argc, char** argv)
@@ -95,6 +138,9 @@ void main(int argc, char** argv)
 
 	// register idle function
 	glutIdleFunc(myIdle);
+
+	// register keyboard input function
+	glutKeyboardFunc(myKey);
 
 	initializeGL();
 	glutMainLoop();
