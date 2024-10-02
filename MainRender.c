@@ -58,6 +58,51 @@ void myDisplay()
 
 	glEnd();
 
+	// Switch matrix mode to draw fixed menu
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+
+	// Draw the menu area
+	glColor3f(0.81f, 0.81f, 0.57f);
+	glBegin(GL_POLYGON);
+	glVertex2f(-1.0f, -0.5f);
+	glVertex2f(1.0f, -0.5f);
+	glVertex2f(1.0f, -1.0f);
+	glVertex2f(-1.0f, -1.0f);
+	glEnd();
+
+	// Draw a small lines
+	glLineWidth(4.0f);
+	glColor3f(0.91f, 0.91f, 0.7f);
+	glBegin(GL_LINES);
+	glVertex2f(-1.0f, -0.63f);
+	glVertex2f(1.0f, -0.63f);
+	glEnd();
+
+	// Draw the button
+	glColor3f(0.91f, 0.91f, 0.7f);
+	glBegin(GL_POLYGON);
+	glVertex2f(-0.25f, -0.75f);
+	glVertex2f(0.25f, -0.75f);
+	glVertex2f(0.25f, -0.875f);
+	glVertex2f(-0.25f, -0.875f);
+	glEnd();
+
+	// Initial drawing color to be black
+	glColor3f(0.0f, 0.0f, 0.0f);
+
+	// Position for the text and draw
+	glRasterPos2f(-0.12f, -0.84f);
+	char* s = "boids";
+	for (int i = 0; i < 5; i++) {
+		char letter = s[i];
+		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, letter);
+	}
+
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+
 	// Swap the double buffers
 	glutSwapBuffers();
 }
@@ -80,7 +125,7 @@ void myKey(unsigned char key, int x, int y) {
 		highlightedBoidIndex = -1;
 	}
 
-	// NOTE: FREEGLUT DOENS'T DETECT MY LAPTOP PAGE UP AND PAGE DOWN
+	// NOTE: FREEGLUT DOENS'T DETECT MY LAPTOP PAGE UP AND PAGE DOWN KEY
 	// THEREFORE, I'M USING THE 'w' key for increase speed and 's' for decrease speed
 	// Increase speed
 	if (key == 'w') {
@@ -153,7 +198,7 @@ void main(int argc, char** argv)
 	glutInit(&argc, argv);
 
 	// Set inital display properties
-	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
+	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
 	glutInitWindowSize(500, 500);
 	glutInitWindowPosition(100, 150);
 	//glViewPort(0, 100, 500, 400);
