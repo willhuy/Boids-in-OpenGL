@@ -9,12 +9,12 @@ void renderBoid(Boid* boid) {
 	float xVertex1 = cos(angle) * BOID_SIZE + boid->xCoordinate;
 	float yVertex1 = sin(angle) * BOID_SIZE + boid->yCoordinate;
 
-	// I want to make an equilateral triangle, so angle has to be 60
-	float xVertex2 = cos(angle + (2 * PI / 3)) * BOID_SIZE + boid->xCoordinate;
-	float yVertex2 = sin(angle + (2 * PI / 3)) * BOID_SIZE + boid->yCoordinate;
+	// I want to make an equilateral triangle angle, so angle has to be 60
+	float xVertex2 = cos(angle + (2 * PI / 3)) * (BOID_SIZE - 0.01f) + boid->xCoordinate;
+	float yVertex2 = sin(angle + (2 * PI / 3)) * (BOID_SIZE - 0.01f) + boid->yCoordinate;
 
-	float xVertex3 = cos(angle - (2 * PI / 3)) * BOID_SIZE + boid->xCoordinate;
-	float yVertex3 = sin(angle - (2 * PI / 3)) * BOID_SIZE + boid->yCoordinate;
+	float xVertex3 = cos(angle - (2 * PI / 3)) * (BOID_SIZE - 0.01f) + boid->xCoordinate;
+	float yVertex3 = sin(angle - (2 * PI / 3)) * (BOID_SIZE - 0.01f) + boid->yCoordinate;
 
 	glVertex2f(xVertex1, yVertex1);
 	glVertex2f(xVertex2, yVertex2);
@@ -35,7 +35,7 @@ void myDisplay()
 				glColor3f(1.0, 0.0, 0.0); // Red for the boid being highlighted
 			}
 			else {
-				find6NearestNeighbors(currentFlock[highlightedBoidIndex], highlightedBoidIndex, &nearestNeighborOfBoid);
+				findNearestNeighbors(currentFlock[highlightedBoidIndex], highlightedBoidIndex, &nearestNeighborOfBoid);
 				for (int neighborIndex = 0; neighborIndex < NUM_OF_NEAREST_NEIGHBORS; neighborIndex++) {
 					// If this is the neighbor of the highlighted boid
 					if (currentFlock[boidIndex] == nearestNeighborOfBoid[neighborIndex]) {
@@ -105,7 +105,7 @@ void initializeGL() {
 void update() {
 	updateBoids();
 	glutPostRedisplay();
-	glutTimerFunc(1000 / 60, update, 0);
+	glutTimerFunc(FRAME_EXIST_TIME, update, 0);
 }
 
 void main(int argc, char** argv)
@@ -144,7 +144,7 @@ void main(int argc, char** argv)
 	glutDisplayFunc(myDisplay);
 
 	// register timer callback function
-	glutTimerFunc(1000 / 60, update, 0);
+	glutTimerFunc(FRAME_EXIST_TIME, update, 0);
 
 	// register keyboard input function
 	glutKeyboardFunc(myKey);

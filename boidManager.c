@@ -50,20 +50,27 @@ void updateBoids() {
 	}
 
 	for (int boidIndex = 0; boidIndex < FLOCK_SIZE; boidIndex++) {
-		// Find 6 nearest neighbors
-		find6NearestNeighbors(previousFlock[boidIndex], boidIndex, &nearestNeighbors);
+		// Find nearest neighbors
+		findNearestNeighbors(previousFlock[boidIndex], boidIndex, &nearestNeighbors);
 
 		// Check if the boid is in certain distance with a wall
-		avoidWalls(boidIndex);
+		if (previousFlock[boidIndex]->xCoordinate < -1.0f + EDGE_AVOIDANCE_DISTANCE || previousFlock[boidIndex]->xCoordinate > 1.0f - EDGE_AVOIDANCE_DISTANCE ||
+			previousFlock[boidIndex]->yCoordinate < -1.0f + EDGE_AVOIDANCE_DISTANCE || previousFlock[boidIndex]->yCoordinate > 1.0f - EDGE_AVOIDANCE_DISTANCE) {
+			avoidWalls(boidIndex);
+		}
+		else {
+			alignWithNearestNeighborDirection(boidIndex);
 
-		speedLimit(currentFlock[boidIndex]);
+			moveAwayFromNearestNeighbor(boidIndex);
+		}
 
+		//speedLimit(currentFlock[boidIndex]);
 		currentFlock[boidIndex]->xCoordinate += currentFlock[boidIndex]->xVelocity;
 		currentFlock[boidIndex]->yCoordinate += currentFlock[boidIndex]->yVelocity;
 	}
 }
 
-void find6NearestNeighbors(Boid* currentBoid, int indexOfCurrentBoid, Boid* givenNearestNeighbors[]) {
+void findNearestNeighbors(Boid* currentBoid, int indexOfCurrentBoid, Boid* givenNearestNeighbors[]) {
 
 	// Iterate through all boids
 	float minDistance = 9999.0f;
@@ -128,6 +135,8 @@ void avoidWalls(int boidIndex) {
 	if (distanceToTopWall <= EDGE_AVOIDANCE_DISTANCE) {
 		currentFlock[boidIndex]->yVelocity -= (1 / distanceToTopWall) * VELOCITY_CHANGE_CONSTANT; // Update yVelocity
 	}
+
+	speedLimit(currentFlock[boidIndex]);
 }
 
 void speedLimit(Boid* boid) {
@@ -139,4 +148,45 @@ void speedLimit(Boid* boid) {
 	if (boid->yVelocity > MAX_SPEED) {
 		boid->yVelocity = (boid->yVelocity / magnitude) * MAX_SPEED;
 	}
+
+	if (boid->xVelocity < BOID_BASE_SPEED) {
+		boid->xVelocity = (boid->xVelocity / magnitude) * BOID_BASE_SPEED;
+	}
+
+	if (boid->yVelocity < BOID_BASE_SPEED) {
+		boid->yVelocity = (boid->yVelocity / magnitude) * BOID_BASE_SPEED;
+	}
+}
+
+void alignWithNearestNeighborDirection(int boidIndex) {
+
+	// Average all the nearest neighbor x and y component
+	float sumX = 0, sumY = 0, avgX = 0, avgY = 0;
+	for (int neighborIndex = 0; neighborIndex < NUM_OF_NEAREST_NEIGHBORS; neighborIndex++) {
+		sumX += nearestNeighbors[neighborIndex]->xVelocity;
+		sumY += nearestNeighbors[neighborIndex]->yVelocity;
+	}
+
+	avgX = sumX / NUM_OF_NEAREST_NEIGHBORS;
+	avgY = sumY / NUM_OF_NEAREST_NEIGHBORS;
+
+	// Gradually align with the nearest neighbors's direction
+	currentFlock[boidIndex]->xVelocity += (avgX - previousFlock[boidIndex]->xVelocity) * DIRECTION_CHANGE_CONSTANT;
+	currentFlock[boidIndex]->yVelocity += (avgY - previousFlock[boidIndex]->yVelocity) * DIRECTION_CHANGE_CONSTANT;
+
+	speedLimit(currentFlock[boidIndex]);
+}
+
+void moveAwayFromNearestNeighbor(int boidIndex) {
+	float distance = -1;
+	for (int neighborIndex = 0; neighborIndex < NUM_OF_NEAREST_NEIGHBORS; neighborIndex++) {
+		distance = findEuclideanDistance(previousFlock[boidIndex]->xCoordinate, nearestNeighbors[neighborIndex]->xCoordinate, 
+										 previousFlock[boidIndex]->yCoordinate, nearestNeighbors[neighborIndex]->yCoordinate);
+		if (distance <= MIN_NEIGHBORS_DISTANCE) {
+			currentFlock[boidIndex]->xVelocity -= (1 / distance) * MOVE_AWAY_CONSTANT;
+			currentFlock[boidIndex]->yVelocity -= (1 / distance) * MOVE_AWAY_CONSTANT;
+		}
+	}
+
+	speedLimit(currentFlock[boidIndex]);
 }
