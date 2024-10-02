@@ -31,33 +31,44 @@ void myDisplay()
 	glBegin(GL_TRIANGLES);
 
 	for (int boidIndex = 0; boidIndex < FLOCK_SIZE; boidIndex++) {
-		if (highlightedBoidIndex != -1 && highlightedBoidIndex < FLOCK_SIZE) {
-			if (boidIndex == highlightedBoidIndex) {
-				glColor3f(1.0, 0.0, 0.0); // Red for the boid being highlighted
-			}
-			else {
-				findNearestNeighbors(currentFlock[highlightedBoidIndex], highlightedBoidIndex, &nearestNeighborOfBoid);
-				for (int neighborIndex = 0; neighborIndex < NUM_OF_NEAREST_NEIGHBORS; neighborIndex++) {
-					// If this is the neighbor of the highlighted boid
-					if (currentFlock[boidIndex] == nearestNeighborOfBoid[neighborIndex]) {
-						glColor3f(0.0, 1.0, 0.0); // Green for the highlighted boid's neighbors
-						break;
-					}
-					else {
-						glColor3f(0.0, 0.0, 1.0);
-					}
-				}
-			}
-		}
-		else {
-			glColor3f(0.0, 0.0, 1.0);
-		}
-
+		chooseBoidColor(boidIndex);
 		renderBoid(currentFlock[boidIndex]);
 	}
 
 	glEnd();
 
+	// Draw the menu
+	drawMenu();
+
+	// Swap the double buffers
+	glutSwapBuffers();
+}
+
+void chooseBoidColor(int boidIndex) {
+	if (highlightedBoidIndex != -1 && highlightedBoidIndex < FLOCK_SIZE) {
+		if (boidIndex == highlightedBoidIndex) {
+			glColor3f(1.0, 0.0, 0.0); // Red for the boid being highlighted
+		}
+		else {
+			findNearestNeighbors(currentFlock[highlightedBoidIndex], highlightedBoidIndex, &nearestNeighborOfBoid);
+			for (int neighborIndex = 0; neighborIndex < NUM_OF_NEAREST_NEIGHBORS; neighborIndex++) {
+				// If this is the neighbor of the highlighted boid
+				if (currentFlock[boidIndex] == nearestNeighborOfBoid[neighborIndex]) {
+					glColor3f(0.0, 1.0, 0.0); // Green for the highlighted boid's neighbors
+					break;
+				}
+				else {
+					glColor3f(0.0, 0.0, 1.0);
+				}
+			}
+		}
+	}
+	else {
+		glColor3f(0.0, 0.0, 1.0);
+	}
+}
+
+void drawMenu() {
 	// Switch matrix mode to draw fixed menu
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
@@ -102,9 +113,6 @@ void myDisplay()
 
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
-
-	// Swap the double buffers
-	glutSwapBuffers();
 }
 
 void myKey(unsigned char key, int x, int y) {
@@ -201,7 +209,6 @@ void main(int argc, char** argv)
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
 	glutInitWindowSize(500, 500);
 	glutInitWindowPosition(100, 150);
-	//glViewport(0, 100, 500, 400);
 
 	// open the screen window
 	glutCreateWindow("Assignment 1");

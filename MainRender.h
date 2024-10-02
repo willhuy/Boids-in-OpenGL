@@ -11,6 +11,10 @@ Boid* nearestNeighborOfBoid[NUM_OF_NEAREST_NEIGHBORS]; // Use to store nearest n
 
 void renderBoid(Boid*);
 
+void chooseBoidColor(int);
+
+void drawMenu();
+
 void myDisplay();
 
 void myIdle();
