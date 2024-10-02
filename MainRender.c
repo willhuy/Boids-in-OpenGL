@@ -129,7 +129,7 @@ void myKey(unsigned char key, int x, int y) {
 	// THEREFORE, I'M USING THE 'w' key for increase speed and 's' for decrease speed
 	// Increase speed
 	if (key == 'w') {
-		if (currentSetSpeed <= MAX_SPEED) {
+		if (currentSetSpeed < MAX_SPEED) {
 			currentSetSpeed += SPEED_STEP;
 			printf("Speed: %f\n", currentSetSpeed);
 		}
@@ -140,7 +140,7 @@ void myKey(unsigned char key, int x, int y) {
 
 	// Decrease speed
 	if (key == 's') {
-		if (currentSetSpeed >= BOID_BASE_SPEED) {
+		if (currentSetSpeed > BOID_BASE_SPEED) {
 			currentSetSpeed -= SPEED_STEP;
 			printf("Speed: %f\n", currentSetSpeed);
 		}
@@ -201,7 +201,7 @@ void main(int argc, char** argv)
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
 	glutInitWindowSize(500, 500);
 	glutInitWindowPosition(100, 150);
-	//glViewPort(0, 100, 500, 400);
+	//glViewport(0, 100, 500, 400);
 
 	// open the screen window
 	glutCreateWindow("Assignment 1");

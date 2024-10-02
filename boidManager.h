@@ -23,7 +23,7 @@
 
 // Randomization related macros
 #define MAX_RANDOM_RANGE 0.5f
-#define MIN_RANDOM_RANGE -0.5f
+#define MIN_RANDOM_RANGE -0.3f
 #define PI 3.14159265f
 
 // OpenGL related macros
@@ -31,6 +31,7 @@
 #define RIGHT_WALL_LIMIT 1.0
 #define TOP_WALL_LIMIT 1.0
 #define BOTTOM_WALL_LIMIT -1.0
+#define MENU_BORDER -0.5
 
 Boid* currentFlock[FLOCK_SIZE];
 Boid* previousFlock[FLOCK_SIZE];
