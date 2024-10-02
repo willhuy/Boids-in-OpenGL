@@ -54,7 +54,12 @@ void updateBoids() {
 		find6NearestNeighbors(previousFlock[boidIndex], boidIndex, &nearestNeighbors);
 
 		// Check if the boid is in certain distance with a wall
-		avoidWalls(previousFlock[boidIndex]);
+		avoidWalls(boidIndex);
+
+		speedLimit(currentFlock[boidIndex]);
+
+		currentFlock[boidIndex]->xCoordinate += currentFlock[boidIndex]->xVelocity;
+		currentFlock[boidIndex]->yCoordinate += currentFlock[boidIndex]->yVelocity;
 	}
 }
 
@@ -103,24 +108,35 @@ void avoidWalls(int boidIndex) {
 	// Approaching left wall
 	float distanceToLeftWall = findEuclideanDistance(LEFT_WALL_LIMIT, previousFlock[boidIndex]->xCoordinate, 0, 0);
 	if (distanceToLeftWall <= EDGE_AVOIDANCE_DISTANCE) {
-		currentFlock[boidIndex]->xVelocity; // Update xVelocity
+		currentFlock[boidIndex]->xVelocity += (1 / distanceToLeftWall) * VELOCITY_CHANGE_CONSTANT; // Update xVelocity
 	}
 
 	// Approaching right wall
 	float distanceToRightWall = findEuclideanDistance(RIGHT_WALL_LIMIT, previousFlock[boidIndex]->xCoordinate, 0, 0);
 	if (distanceToRightWall <= EDGE_AVOIDANCE_DISTANCE) {
-		currentFlock[boidIndex]->xVelocity; // Update xVelocity
+		currentFlock[boidIndex]->xVelocity -= (1 / distanceToRightWall) * VELOCITY_CHANGE_CONSTANT; // Update xVelocity
 	}
 
 	// Approaching bottom wall
 	float distanceToBottomWall = findEuclideanDistance(0, 0, BOTTOM_WALL_LIMIT, previousFlock[boidIndex]->yCoordinate);
 	if (distanceToBottomWall <= EDGE_AVOIDANCE_DISTANCE) {
-		currentFlock[boidIndex]->yVelocity; // Update yVelocity
+		currentFlock[boidIndex]->yVelocity += (1 / distanceToBottomWall) * VELOCITY_CHANGE_CONSTANT; // Update yVelocity
 	}
 
 	// Approaching top wall
 	float distanceToTopWall = findEuclideanDistance(0, 0, TOP_WALL_LIMIT, previousFlock[boidIndex]->yCoordinate);
 	if (distanceToTopWall <= EDGE_AVOIDANCE_DISTANCE) {
-		currentFlock[boidIndex]->yVelocity; // Update yVelocity
+		currentFlock[boidIndex]->yVelocity -= (1 / distanceToTopWall) * VELOCITY_CHANGE_CONSTANT; // Update yVelocity
+	}
+}
+
+void speedLimit(Boid* boid) {
+	float magnitude = findEuclideanDistance(boid->xVelocity, 0, boid->yVelocity, 0);
+	if (boid->xVelocity > MAX_SPEED) {
+		boid->xVelocity = (boid->xVelocity / magnitude) * MAX_SPEED;
+	}
+
+	if (boid->yVelocity > MAX_SPEED) {
+		boid->yVelocity = (boid->yVelocity / magnitude) * MAX_SPEED;
 	}
 }

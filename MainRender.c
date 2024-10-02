@@ -38,7 +38,6 @@ void myDisplay()
 				find6NearestNeighbors(currentFlock[highlightedBoidIndex], highlightedBoidIndex, &nearestNeighborOfBoid);
 				for (int neighborIndex = 0; neighborIndex < NUM_OF_NEAREST_NEIGHBORS; neighborIndex++) {
 					// If this is the neighbor of the highlighted boid
-					printf("Current boid : %p, the nearest neighbors: %p\n", currentFlock[boidIndex], nearestNeighbors[neighborIndex]);
 					if (currentFlock[boidIndex] == nearestNeighborOfBoid[neighborIndex]) {
 						glColor3f(0.0, 1.0, 0.0); // Green for the highlighted boid's neighbors
 						break;
@@ -103,6 +102,12 @@ void initializeGL() {
 	gluOrtho2D(LEFT_WALL_LIMIT, RIGHT_WALL_LIMIT, BOTTOM_WALL_LIMIT, TOP_WALL_LIMIT);
 }
 
+void update() {
+	updateBoids();
+	glutPostRedisplay();
+	glutTimerFunc(1000 / 60, update, 0);
+}
+
 void main(int argc, char** argv)
 {
 	// Print out the control instructions
@@ -138,8 +143,8 @@ void main(int argc, char** argv)
 	// register redraw function
 	glutDisplayFunc(myDisplay);
 
-	// register idle function
-	glutIdleFunc(myIdle);
+	// register timer callback function
+	glutTimerFunc(1000 / 60, update, 0);
 
 	// register keyboard input function
 	glutKeyboardFunc(myKey);

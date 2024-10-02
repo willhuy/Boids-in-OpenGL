@@ -10,15 +10,17 @@
 
 // Boid related macros
 #define FLOCK_SIZE 40
-#define BOID_BASE_SPEED 0.1f
+#define BOID_BASE_SPEED 0.005f
 #define NUM_OF_NEAREST_NEIGHBORS 6
-#define EDGE_AVOIDANCE_DISTANCE 0.1f
+#define EDGE_AVOIDANCE_DISTANCE 0.05f
+#define VELOCITY_CHANGE_CONSTANT 0.0001f
+#define MAX_SPEED 0.01f
 
 // Randomization related macros
 #define MAX_RANDOM_RANGE 0.5f
 #define MIN_RANDOM_RANGE -0.5f
 
-// OpenGL realted macros
+// OpenGL related macros
 #define LEFT_WALL_LIMIT -1.0
 #define RIGHT_WALL_LIMIT 1.0
 #define TOP_WALL_LIMIT 1.0
@@ -41,3 +43,5 @@ void avoidWalls(int);
 void find6NearestNeighbors(Boid*, int, Boid*[]);
 
 float findEuclideanDistance(float, float, float, float);
+
+void speedLimit(Boid*);

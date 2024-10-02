@@ -18,3 +18,5 @@ void myIdle();
 void myKey(unsigned char, int, int);
 
 void initializeGL();
+
+void update();
