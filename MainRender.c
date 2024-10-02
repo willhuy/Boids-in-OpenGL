@@ -16,6 +16,7 @@ void renderBoid(Boid* boid) {
 	float xVertex3 = cos(angle - (2 * PI / 3)) * (BOID_SIZE - 0.01f) + boid->xCoordinate;
 	float yVertex3 = sin(angle - (2 * PI / 3)) * (BOID_SIZE - 0.01f) + boid->yCoordinate;
 
+	// Draw the triangle vertex
 	glVertex2f(xVertex1, yVertex1);
 	glVertex2f(xVertex2, yVertex2);
 	glVertex2f(xVertex3, yVertex3);
@@ -30,7 +31,7 @@ void myDisplay()
 	glBegin(GL_TRIANGLES);
 
 	for (int boidIndex = 0; boidIndex < FLOCK_SIZE; boidIndex++) {
-		if (highlightedBoidIndex != -1) {
+		if (highlightedBoidIndex != -1 && highlightedBoidIndex < FLOCK_SIZE) {
 			if (boidIndex == highlightedBoidIndex) {
 				glColor3f(1.0, 0.0, 0.0); // Red for the boid being highlighted
 			}
@@ -61,11 +62,6 @@ void myDisplay()
 	glutSwapBuffers();
 }
 
-void myIdle() {
-	updateBoids();
-	glutPostRedisplay();
-}
-
 void myKey(unsigned char key, int x, int y) {
 	// User press 'q' to quit
 	if (key == 'q') {
@@ -82,6 +78,30 @@ void myKey(unsigned char key, int x, int y) {
 	// Un-highlight the boid
 	if (key == '0') {
 		highlightedBoidIndex = -1;
+	}
+
+	// NOTE: FREEGLUT DOENS'T DETECT MY LAPTOP PAGE UP AND PAGE DOWN
+	// THEREFORE, I'M USING THE 'w' key for increase speed and 's' for decrease speed
+	// Increase speed
+	if (key == 'w') {
+		if (currentSetSpeed <= MAX_SPEED) {
+			currentSetSpeed += SPEED_STEP;
+			printf("Speed: %f\n", currentSetSpeed);
+		}
+		else {
+			printf("Maximum allowed speed reached\n");
+		}
+	}
+
+	// Decrease speed
+	if (key == 's') {
+		if (currentSetSpeed >= BOID_BASE_SPEED) {
+			currentSetSpeed -= SPEED_STEP;
+			printf("Speed: %f\n", currentSetSpeed);
+		}
+		else {
+			printf("Minimum allowed speed reached\n");
+		}
 	}
 }
 
@@ -136,6 +156,7 @@ void main(int argc, char** argv)
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
 	glutInitWindowSize(500, 500);
 	glutInitWindowPosition(100, 150);
+	//glViewPort(0, 100, 500, 400);
 
 	// open the screen window
 	glutCreateWindow("Assignment 1");
