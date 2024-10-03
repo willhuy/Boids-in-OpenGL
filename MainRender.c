@@ -201,11 +201,9 @@ void myMouseButton(int button, int state, int x, int y) {
 
 			// Stop the simulation
 			if (stopSimulation == 0) {
-				printf("STOP!!!!!!!!\n");
 				stopSimulation = 1;
 			}
 			else { // Resume the simulation
-				printf("RESUMEEEEEE!!!!!!!!\n");
 				stopSimulation = 0;
 				glutTimerFunc(FRAME_EXIST_TIME, update, 0); // Resume the simulation by calling the timer
 			}
