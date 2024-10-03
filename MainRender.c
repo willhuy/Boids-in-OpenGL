@@ -91,14 +91,35 @@ void drawMenu() {
 	glVertex2f(1.0f, -0.63f);
 	glEnd();
 
-	// Draw the button
-	glColor3f(0.91f, 0.91f, 0.7f);
+	// Draw shadow
+	glColor3f(0.5f, 0.5f, 0.5f); // Gray
 	glBegin(GL_POLYGON);
-	glVertex2f(-0.25f, -0.75f);
-	glVertex2f(0.25f, -0.75f);
-	glVertex2f(0.25f, -0.875f);
-	glVertex2f(-0.25f, -0.875f);
+	glVertex2f(BUTTON_X_LEFT  + BUTTON_SHADOW_SHIFT, BUTTON_Y_TOP - BUTTON_SHADOW_SHIFT);
+	glVertex2f(BUTTON_X_RIGHT + BUTTON_SHADOW_SHIFT, BUTTON_Y_TOP - BUTTON_SHADOW_SHIFT);
+	glVertex2f(BUTTON_X_RIGHT + BUTTON_SHADOW_SHIFT, BUTTON_Y_BOTTOM - BUTTON_SHADOW_SHIFT);
+	glVertex2f(BUTTON_X_LEFT  + BUTTON_SHADOW_SHIFT, BUTTON_Y_BOTTOM - BUTTON_SHADOW_SHIFT);
 	glEnd();
+
+	// Draw the button
+	if (stopSimulation == 0) {
+		glColor3f(0.91f, 0.91f, 0.7f);
+		glBegin(GL_POLYGON);
+		glVertex2f(BUTTON_X_LEFT, BUTTON_Y_TOP);
+		glVertex2f(BUTTON_X_RIGHT, BUTTON_Y_TOP);
+		glVertex2f(BUTTON_X_RIGHT, BUTTON_Y_BOTTOM);
+		glVertex2f(BUTTON_X_LEFT, BUTTON_Y_BOTTOM);
+		glEnd();
+	}
+	else {
+		// Simulation is stop => change the transparency to semi to know it's pressed
+		glColor3f(0.81f, 0.81f, 0.6f);
+		glBegin(GL_POLYGON);
+		glVertex2f(-0.25f, -0.75f);
+		glVertex2f(0.25f, -0.75f);
+		glVertex2f(0.25f, -0.875f);
+		glVertex2f(-0.25f, -0.875f);
+		glEnd();
+	}
 
 	// Initial drawing color to be black
 	glColor3f(0.0f, 0.0f, 0.0f);
@@ -158,6 +179,41 @@ void myKey(unsigned char key, int x, int y) {
 	}
 }
 
+void myMouseButton(int button, int state, int x, int y) {
+	// if the right button is pressed then quit
+	float mouseXCoorGL = 0.0f;
+	float mouseYCoorGL = 0.0f;
+	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+
+		// Normalized the input x and y 
+		float scaledX = (GLfloat)x / (GLfloat)WIDTH;
+		float scaledY = ((GLfloat)HEIGHT - (GLfloat)y) / (GLfloat)HEIGHT;
+		
+		// Scaled the x and y by 2 to match the range -1 to 1 on both X and Y axis
+		// Then left shift the whole range by minus 1
+		// This is due to we are using ortho2d from -1 to 1, while the GLUT system only accounts from 0 to 1 numerically
+		mouseXCoorGL = (scaledX * 2.0f) - 1.0f;
+		mouseYCoorGL = (scaledY * 2.0f) - 1.0f;
+
+		// Check if the mouse is within the boundary of the 'boids' button
+		if (mouseXCoorGL >= BUTTON_X_LEFT && mouseXCoorGL <= BUTTON_X_RIGHT &&
+			mouseYCoorGL >= BUTTON_Y_BOTTOM && mouseYCoorGL <= BUTTON_Y_TOP) {
+
+			// Stop the simulation
+			if (stopSimulation == 0) {
+				printf("STOP!!!!!!!!\n");
+				stopSimulation = 1;
+			}
+			else { // Resume the simulation
+				printf("RESUMEEEEEE!!!!!!!!\n");
+				stopSimulation = 0;
+				glutTimerFunc(FRAME_EXIST_TIME, update, 0); // Resume the simulation by calling the timer
+			}
+		}
+	}
+}
+
+
 void initializeGL() {
 	// Background set to block
 	glClearColor(0, 0, 0, 1);
@@ -176,9 +232,12 @@ void initializeGL() {
 }
 
 void update() {
-	updateBoids();
-	glutPostRedisplay();
-	glutTimerFunc(FRAME_EXIST_TIME, update, 0);
+	// Play the simulation
+	if (stopSimulation == 0) {
+		updateBoids();
+		glutPostRedisplay();
+		glutTimerFunc(FRAME_EXIST_TIME, update, 0);
+	}
 }
 
 void main(int argc, char** argv)
@@ -206,8 +265,8 @@ void main(int argc, char** argv)
 	glutInit(&argc, argv);
 
 	// Set inital display properties
-	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
-	glutInitWindowSize(500, 500);
+	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
+	glutInitWindowSize(WIDTH, HEIGHT);
 	glutInitWindowPosition(100, 150);
 
 	// open the screen window
@@ -221,6 +280,9 @@ void main(int argc, char** argv)
 
 	// register keyboard input function
 	glutKeyboardFunc(myKey);
+
+	// register mouse input function
+	glutMouseFunc(myMouseButton);
 
 	// Initialize OpenGL settings
 	initializeGL();
