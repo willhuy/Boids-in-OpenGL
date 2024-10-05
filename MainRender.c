@@ -145,7 +145,6 @@ void myKey(unsigned char key, int x, int y) {
 
 	// User press number key from 1 to 9 to highlight the Boid
 	if (key >= '1' && key <= '9') {
-		printf("User press %c, the highlight boid index is %d\n", key, key - '1');
 		highlightedBoidIndex = key - '1'; // Convert character to integer and minus 1 to get the index
 	}
 
@@ -243,8 +242,8 @@ void main(int argc, char** argv)
 	// Print out the control instructions
 	printf("\n\n\nScreen Controls:\n");
 	printf("----------------------\n");
-	printf("Page Up : faster\n");
-	printf("Page Down : slower\n");
+	printf("w : faster (NOTE: FREEGLUT DOENS'T DETECT MY LAPTOP PAGE UP AND PAGE DOWN KEY, EVEN WITH FN KEY)\n");
+	printf("s : slower (NOTE: FREEGLUT DOENS'T DETECT MY LAPTOP PAGE UP AND PAGE DOWN KEY, EVEN WITH FN KEY)\n");
 	printf("[1 - 9] : highlight boid and its neighbors\n");
 	printf("0 : turn off highlighting\n");
 	printf("q : quit\n\n\n");
